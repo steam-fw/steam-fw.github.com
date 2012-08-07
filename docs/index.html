@@ -5,18 +5,18 @@
         <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
         <title>Steam Framework Documentation</title>
         <meta name="description" content=""/>
-        <link rel="stylesheet" type="text/css" href="/steam/static/steam.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/steam.css"/>
     </head>
     <body>
         <nav>
-            <a href="/steam/">introduction</a>
-            <a href="/steam/docs/" class="active">documentation</a>
-            <a href="https://github.com/shaddyz/steam/tarball/master">download</a>
-            <a href="https://github.com/shaddyz/steam/issues">issues</a>
-            <a href="https://github.com/shaddyz/steam">source code</a>
+            <a href="/">introduction</a>
+            <a href="/docs/" class="active">documentation</a>
+            <a href="https://github.com/steam-fw/steam/tarball/master">download</a>
+            <a href="https://github.com/steam-fw/steam/issues">issues</a>
+            <a href="https://github.com/steam-fw/steam">source code</a>
         </nav>
         <div id="header">
-            <img src="/steam/static/steam-logo.png" alt="Steam"/> &nbsp; An elegant PHP web application framework
+            <img src="/static/steam-logo.png" alt="Steam"/> &nbsp; An elegant PHP web application framework
         </div>
         <div id="content">
             <h1>Steam Framework Documentation</h1>
@@ -120,8 +120,8 @@
             <h3><a name="getting-started/installation">Installation</a></h3>
             
             <h3><a name="getting-started/organization">File Organization</a></h3>
-            <img src="/steam/static/root-dir.png" alt="Root Directory" class="right"/>
-            <img src="/steam/static/dir-tree.png" alt="Directory Tree" class="left"/>
+            <img src="/static/root-dir.png" alt="Root Directory" class="right"/>
+            <img src="/static/dir-tree.png" alt="Directory Tree" class="left"/>
             <p>Let's take a look at how files and directories are organized. We will start with the entry point "index.php". Apache hands all requests to this file initially. The entry point then includes "functions.php" and "libraries/Steam.php". "Steam.php" is the heart of the framework, and it will load the global configuration file "config.php" and load the necessary subsystems and pass execution to a resource. You can also find a copy of the license, the command-line interface for Steam, and a version definition file in the root directory.</p>
             <p>The root directory contains two subdirectories of interest. The first is the "libraries" directory which contains all general purpose classes such as the Steam, Zend, and Minify classes. You can also add additional libraries of classes here if you wish. The other directory, "apps", contains all the application specific files which we will examine more closely.</p>
             <p>In the apps directory, we can find a unique "global" app directory and the included "example" application. The global app currently provides global error pages. The organization of application directories are further dissected in <a href="#applications/skeleton">Application Skeleton</a> section.</p>
@@ -139,7 +139,7 @@ $ mkdir cache
 $ chmod g+w,o+w cache
             </pre>
             
-            <p>Next, open the configuration file at <strong>/var/www/steam/config.php</strong> and update the following values:</p>
+            <p>Next, open the configuration file at <strong>/var/www/config.php</strong> and update the following values:</p>
             <pre class="code">
 $cache_backend = 'File';
 $cache_params  = array('cache_dir' => str_replace('config.php', 'cache/', __FILE__));
@@ -169,7 +169,7 @@ $db_params        = array(
             </pre>
             
             <h3><a name="getting-started/firebug-logging">Error Logging with FireBug+FirePHP</a></h3>
-            <img src="/steam/static/firebug-console.png" alt="FireBug Console" class="center"/>
+            <img src="/static/firebug-console.png" alt="FireBug Console" class="center"/>
             <p>One of the most time-saving features of Steam is native integration with FireBug's console. This will discretely log most non-serious errors via HTTP headers to FireBug without screwing up script output. You will need to install <a href="https://getfirebug.com/" target="_blank">FireBug</a> and <a href="http://www.firephp.org/" target="_blank">FirePHP</a> to use this invaluable feature.</p>
             
             <p><a href="#contents">Contents</a></p>
