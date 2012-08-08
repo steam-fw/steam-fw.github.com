@@ -448,21 +448,101 @@ $_GET['text_id'] = \Steam::this_resource_param();
             <p><a href="#contents">Contents</a></p>
             
             <h2><a name="templates">Templates</a></h2>
+            <p>Templates are typically used in conjuction with views and widgets to generate HTML pages. They include the markup used used on multiple similar pages, and define locations where views will insert text and widgets. An entire site may only need a single template if all the pages share the same layout. These are examples of cases where I've needed more than one template: a barebones template for dialog views, a custom template for an apps Facebook interface, and template for the public pages versus the private, member, pages.</p>
+            
+            <p>Templates are standard PHP scripts which follow specific conventions. It is best to keep logic and processing out of templates; that belongs in views or widgets. An HTML template is an HTML document that prints PHP variables in key locations known as <strong>blocks</strong>. These blocks will be insertion points for text and widgets, and they will be referenced by name in views.</p>
+            
+            <h3><a name="templates/basic-html">Basic HTML Template</a></h3>
+            <p>A basic HTML template maybe define only a few blocks. In our example, we will use three: a header, the content block, and a title. It looks like this:</p>
+            
+            <pre class="code">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;&lt;?php print $title ?&gt;&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div&gt;&lt;?php print $header ?&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;?php print $content ?&gt;&lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+            
+            <p>Context is what distinguishes blocks for text versus blocks for widgets. In the template above, we could use all the blocks for either, but it makes most sense to put simple text into the title block and widgets into the others. Let's make a view using this template. Assume we saved our template to a file called "basic.php" in the templates directory of an app.</p>
+            
+            <pre class="code">
+&lt;?php
+
+$template = 'basic';
+$text     = array('title' => 'Basic HTML Template');
+$layout   = array(
+    'header'  => array('banner'),
+    'content' => array('about'),
+);
+
+?&gt;
+            </pre>
+            
+            <h3><a name="templates/html">Complete HTML Template</a></h3>
+            <p></p>
+            
+            <h3><a name="templates/email">Email Template</a></h3>
+            
             <p><a href="#contents">Contents</a></p>
             
             <h2><a name="widgets">Widgets</a></h2>
+            
+            <h3><a name="widgets/menu">Menu Widget</a></h3>
+            <h3><a name="widgets/table">Table Widget</a></h3>
+            <h3><a name="widgets/static-resources">Widget-specific Javascript/CSS</a></h3>
+
             <p><a href="#contents">Contents</a></p>
             
             <h2><a name="models">Models</a></h2>
+            
+            <h3><a name="models/simple-xml">Simple XML Basics</a></h3>
+            <h3><a name="models/array">Array-driven Model</a></h3>
+            <h3><a name="models/file">File-driven Model</a></h3>
+            <h3><a name="models/db">Database-driven Model</a></h3>
+            <h3><a name="models/sql">Database-driven Model with MySQL (shortcut)</a></h3>
+            <h3><a name="models/api">3rd Party Web Service Interface Model (API Translation)</a></h3>
+            <h3><a name="models/permissions">Model Permissions</a></h3>
+            <h3><a name="models/api">Manipulation via RESTful API</a></h3>
+            <h3><a name="models/ajax">Ajax manipulation using Steam.js</a></h3>
+            <h3><a name="models/extending">Extending the Model Class (shortcut)</a></h3>
+            <h3><a name="models/formats">Output Formats / Non-XML Representations</a></h3>
+            
             <p><a href="#contents">Contents</a></p>
             
             <h2><a name="actions">Actions</a></h2>
+            
+            <h3><a name="actions/forms">HTML Form Submission</a></h3>
+            <h3><a name="actions/javascript">Javascript Services</a></h3>
+            <h3><a name="actions/downloads">File Downloads</a></h3>
+            <h3><a name="actions/cronjobs">Cronjobs</a></h3>
+            
             <p><a href="#contents">Contents</a></p>
             
             <h2><a name="static-resources">Static Resources</a></h2>
+            
+            <h3><a name="static-resources/basics">Basics</a></h3>
+            <h3><a name="static-resources/minify">Auto Minify CSS</a></h3>
+            <h3><a name="static-resources/minify">Auto Minify CSS</a></h3>
+            <h3><a name="static-resources/caching">Browser Caching + Fingerprinting</a></h3>
+            
             <p><a href="#contents">Contents</a></p>
             
             <h2><a name="advanced-topics">Advanced Topics</a></h2>
+            
+            <h3><a name="advanced-topics/sessions">Sessions</a></h3>
+            <h3><a name="advanced-topics/notifications">Notification System</a></h3>
+            <h3><a name="advanced-topics/custom-error-pages">Custom Error Pages</a></h3>
+            <h3><a name="advanced-topics/widget-caching">Widget Caching</a></h3>
+            <h3><a name="advanced-topics/dialogs">Working with jQuery UI Dialogs</a></h3>
+            <h3><a name="advanced-topics/nested-transactions">Nested Transactions with MySQL</a></h3>
+            <h3><a name="advanced-topics/db-load-balancing">Database Load Balancing</a></h3>
+            <h3><a name="advanced-topics/syslog">Working with Syslog</a></h3>
+            <h3><a name="advanced-topics/email-redirection">Redirecting email in non-production environments</a></h3>
+            
             <p><a href="#contents">Contents</a></p>
         </div>
     </body>
