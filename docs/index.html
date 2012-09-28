@@ -453,7 +453,7 @@ $_GET['text_id'] = \Steam::this_resource_param();
             <p>Templates are standard PHP scripts which follow specific conventions. It is best to keep logic and processing out of templates; that belongs in views or widgets. An HTML template is an HTML document that prints PHP variables in key locations known as <strong>blocks</strong>. These blocks will be insertion points for text and widgets, and they will be referenced by name in views.</p>
             
             <h3><a name="templates/basic-html">Basic HTML Template</a></h3>
-            <p>A basic HTML template maybe define only a few blocks. In our example, we will use three: a header, the content block, and a title. It looks like this:</p>
+            <p>A basic HTML template may only define a few blocks. In our example, we will use three: a header, the content block, and a title. It looks like this:</p>
             
             <pre class="code">
 &lt;html&gt;
@@ -467,7 +467,7 @@ $_GET['text_id'] = \Steam::this_resource_param();
 &lt;/html&gt;
             </pre>
             
-            <p>Context is what distinguishes blocks for text versus blocks for widgets. In the template above, we could use all the blocks for either, but it makes most sense to put simple text into the title block and widgets into the others. Let's make a view using this template. Assume we saved our template to a file called "basic.php" in the templates directory of an app.</p>
+            <p>Context is what distinguishes text blocks from widget blocks. In the template above, we could use any of the blocks for either, but it makes most sense to put simple text into the title block and widgets into the others. Let's make a view using this template. Assume we saved our template to a file called "basic.php" in the templates directory of an app.</p>
             
             <pre class="code">
 &lt;?php
@@ -481,11 +481,128 @@ $layout   = array(
 
 ?&gt;
             </pre>
+            <p>As was previously demonstrated, this view sets the page title to "Basic HTML Template", inserts the banner widget into the header block, and inserts the about widget into the content block.</p>
             
             <h3><a name="templates/html">Complete HTML Template</a></h3>
-            <p></p>
+            <p>We can further develop the basic template to accomplish useful tasks. First, let's consider there are static resources which always need to be included with this template. This could be a favorite icon, a javascript library such as jQuery, or an important CSS file. In order to make our template more portable and take advantage of Steam's built-in static resource optimizations, we can use the uri static method of the StaticResource class and also include a special "head" block. This results in a more advanced template:</p>
+            
+            <pre class="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;&lt;?php print $title ?&gt;&lt;/title&gt;
+        &lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; href=&quot;&lt;?php print \Steam\StaticResource::uri('images/favicon.png') ?&gt;&quot; /&gt;
+        &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;all&quot; href=&quot;&lt;?php print \Steam\StaticResource::uri('css/layout.css') ?&gt;&quot;/&gt;
+        &lt;?php print $head ?&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id=&quot;container-block&quot;&gt;
+            &lt;div id=&quot;header-block&quot;&gt;
+                &lt;div id=&quot;logo&quot;&gt;&lt;a href=&quot;&lt;?php print \Steam::uri('/') ?&gt;&quot;&gt;&lt;img src=&quot;&lt;?php print \Steam\StaticResource::uri('images/logo.png') ?&gt;&quot;/&gt;Steam Framework&lt;/a&gt;&lt;/div&gt;
+                &lt;?php print $header ?&gt;
+            &lt;/div&gt;
+            &lt;div id=&quot;content-block&quot;&gt;
+                &lt;?php print $content ?&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+            </pre>
             
             <h3><a name="templates/email">Email Template</a></h3>
+            <p>Templates can be used to generate any type of output. I will show you some ways to use templates to to produce email messages. We will start off with a plain text email template:</p>
+            
+            <pre class="code">
+&lt;?php $subject = 'Thank you' ?&gt;
+Dear User,
+
+Thank you for your interest in the Steam Framework!
+
+This is an example of a plain text email template.
+I know there isn't much to it, but consider the
+possibilities!
+
+Sincerely,
+Shaddy Zeineddine
+            </pre>
+            <p>To use this template, we just need to intelligently combine output buffering and an include. Here we are:</p>
+            
+            <pre class="code">
+$subject = 'Default Subject';
+ob_clean();
+include \Steam::app_path('templates/email/thank-you.php');
+$body = ob_get_contents();
+ob_clean();
+            </pre>
+            <p>It's nothing fancy, but it gets the job done. Let's make it more interesting by adding dynamic content to our template:</p>
+            
+            <pre class="code">
+&lt;?php $subject = 'Thank you ' . $user->name ?&gt;
+Dear <?php print $user->name ?>,
+
+Thank you for your interest in the Steam Framework!
+
+This is an example of a plain text email template.
+I know there isn't much to it, but consider the
+possibilities!
+
+Please check out my website at <?php print \Steam::full_uri('/') ?> 
+
+Sincerely,
+Shaddy Zeineddine
+            </pre>
+            <p>Assume we define a user object with the name property before loading the template. Also, note the use of the full_uri static method for the link. We will need to include the URI scheme and domain for links to work in an email. You should also note: PHP consumes a whitespace character after the closing PHP tag which can unexpectedly remove a desired line break. I solve this problem by included a single space after the closing tag and before a line break.</p>
+            
+            <p>Often we want both a plain text and an HTML version of the same email. This can be done using one template by adding a little logic:</p>
+            
+            <pre class="code">
+&lt;?php $subject = 'Thank you';
+
+if ($content_type == 'text/plain') { ?&gt;
+Dear User,
+
+Thank you for your interest in the Steam Framework!
+
+This is an example of a plain text email template.
+I know there isn't much to it, but consider the
+possibilities!
+
+Sincerely,
+Shaddy Zeineddine
+&lt;?php } else { ?&gt;
+&lt;html&gt;
+    &lt;title&gt;Thank you&lt;/title&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+        body {font-family: &quot;Comic Sans&quot;}
+    &lt;/style&gt;
+    &lt;body&gt;
+        &lt;p&gt;Dear User,&lt;/p&gt;
+        &lt;p&gt;Thank you for your interest in the Steam Framework!&lt;/p&gt;
+        &lt;p&gt;This is an example of a plain text email template. I know
+        there isn't much to it, but consider the possibilities!&lt;/p&gt;
+        &lt;p&gt;Sincerely,&lt;/br&gt;
+        Shaddy Zeineddine&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+&lt;?php } ?&gt;
+            </pre>
+            <p>To use it, we add a second include:</p>
+            
+            <pre class="code">
+$subject = 'Default Subject';
+
+ob_clean();
+$content_type = 'text/plain';
+include \Steam::app_path('templates/email/thank-you.php');
+$body_text = ob_get_contents();
+
+ob_clean();
+$content_type = 'text/html';
+include \Steam::app_path('templates/email/thank-you.php');
+$body_html = ob_get_contents();
+ob_clean();
+            </pre>
+            <p>Simple and effective.</p>
             
             <p><a href="#contents">Contents</a></p>
             
